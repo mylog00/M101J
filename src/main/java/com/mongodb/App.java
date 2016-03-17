@@ -19,8 +19,8 @@ public class App {
         final Configuration configuration = new Configuration(Configuration.VERSION_2_3_23);
         configuration.setClassForTemplateLoading(App.class, "/");
         // Sets how errors will appear.
-        // During web page *development* TemplateExceptionHandler.HTML_DEBUG_HANDLER is better.
-        configuration.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
+        // During web page *product* TemplateExceptionHandler.RETHROW_HANDLER is better.
+        configuration.setTemplateExceptionHandler(TemplateExceptionHandler.HTML_DEBUG_HANDLER);
 
         Spark.get("/", (request, response) -> {
             final StringWriter writer = new StringWriter();
@@ -36,5 +36,7 @@ public class App {
             }
             return writer;
         });
+
+        Spark.get("/echo/:thing", (request, response) -> request.params(":thing"));
     }
 }
