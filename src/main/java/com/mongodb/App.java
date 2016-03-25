@@ -1,9 +1,12 @@
 package com.mongodb;
 
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import freemarker.template.TemplateExceptionHandler;
+import org.bson.Document;
 import spark.Spark;
 
 import java.io.IOException;
@@ -16,14 +19,26 @@ import java.util.Map;
  * Main application
  */
 public class App {
+    /**
+     * Spark and Freemarker example
+     *
+     * @param args command line arguments
+     */
     public static void main(String[] args) {
         final Configuration configuration = new Configuration(Configuration.VERSION_2_3_23);
-        configuration.setClassForTemplateLoading(App.class, "/");
+        configuration.setClassForTemplateLoading(App.class, "/freemarker");
         // Sets how errors will appear.
         // During web page *product* TemplateExceptionHandler.RETHROW_HANDLER is better.
         configuration.setTemplateExceptionHandler(TemplateExceptionHandler.HTML_DEBUG_HANDLER);
 
-        Spark.get("/", (request, response) -> {
+        final MongoClient client = new MongoClient();
+        final MongoDatabase database = client.getDatabase("course");
+        final MongoCollection<Document> collection = database.getCollection("hello");
+        collection.drop();
+
+        collection.insertOne(new Document("name", "MongoDB+"));
+
+        Spark.get("/fruits", (request, response) -> {
             try {
                 final Template template = configuration.getTemplate("fruitPicker.ftl");
 
@@ -46,15 +61,12 @@ public class App {
             return "Your favorite fruit is " + fruit;
         });
 
-        Spark.get("/hello", (request, response) -> {
+        Spark.get("/", (request, response) -> {
             final StringWriter writer = new StringWriter();
             try {
                 final Template template = configuration.getTemplate("hello.ftl");
-
-                final Map<String, Object> helloMap = new HashMap<String, Object>() {{
-                    put("name", "Freemarker");
-                }};
-                template.process(helloMap, writer);
+                final Document document = collection.find().first();
+                template.process(document, writer);
             } catch (IOException | TemplateException e) {
                 e.printStackTrace();
             }

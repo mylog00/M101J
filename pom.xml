@@ -13,7 +13,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <jdk.version>1.8</jdk.version>
-        <mongo-driver.version>3.0.4</mongo-driver.version>
+        <mongo-driver.version>3.2.2</mongo-driver.version>
         <spark.version>2.3</spark.version>
         <freemarker.version>2.3.23</freemarker.version>
         <!--test library version-->
