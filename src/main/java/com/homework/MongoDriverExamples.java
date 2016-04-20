@@ -1,10 +1,7 @@
 package com.homework;
 
 import com.mongodb.MongoClient;
-import com.mongodb.client.FindIterable;
-import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoCursor;
-import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.*;
 import com.mongodb.client.model.*;
 import com.mongodb.util.DocumentUtils;
 import org.bson.Document;
@@ -91,7 +88,19 @@ public final class MongoDriverExamples {
         collection.updateMany(Filters.eq("x", 1), Updates.inc("x", 1));
 
         //DELETE*************************************
-        collection.deleteOne(Filters.gt("x",44));
-        collection.deleteMany(Filters.gt("x",24));
+        collection.deleteOne(Filters.gt("x", 44));
+        collection.deleteMany(Filters.gt("x", 24));
+
+        //AGGREGATION
+        List<Bson> pipeline = Arrays.asList(
+                //first stage
+                Aggregates.group("$x", Accumulators.sum("sum", "$y")),
+                //second stage
+                Aggregates.match(Filters.gt("$sum", 10))
+        );
+        AggregateIterable<Document> aggregate = collection.aggregate(pipeline);
+
+        //PARSE DOCUMENT FROM JSON
+        Document parsedJson = Document.parse("$group:{_id:\"$state\", population:{$sum:\"$pop\"}}");
     }
 }
