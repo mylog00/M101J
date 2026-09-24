@@ -15,7 +15,7 @@
         <jdk.version>1.8</jdk.version>
         <mongo-driver.version>3.2.2</mongo-driver.version>
         <spark.version>2.9.3</spark.version>
-        <freemarker.version>2.3.23</freemarker.version>
+        <freemarker.version>2.3.35</freemarker.version>
         <!--test library version-->
         <junit.version>4.13.2</junit.version>
     </properties>
